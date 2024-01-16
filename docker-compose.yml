@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  engine:
+    build: .
+    env_file:
+      - .env
+    environment:
+     - ENV=prod
+     - GIN_MODE=release
+     - DEBUG=false
+    ports:
+      - 3000:3000
+    restart: always

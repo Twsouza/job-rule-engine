@@ -1,0 +1,13 @@
+
+version: '3'
+
+services:
+  engine:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    command: make startDevServer
+    ports:
+      - 3000:3000
+    volumes:
+      - ..:/src/job-rule-engine

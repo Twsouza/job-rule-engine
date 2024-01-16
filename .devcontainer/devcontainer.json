@@ -1,0 +1,8 @@
+{
+  "name": "job-rule-engine",
+  "dockerComposeFile": [
+    "docker-compose.yml"
+  ],
+  "service": "engine",
+  "workspaceFolder": "/src/job-rule-engine"
+}
