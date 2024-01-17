@@ -5,9 +5,12 @@ import (
 	"regexp"
 
 	"github.com/Twsouza/job-rule-engine/domain"
+	"github.com/Twsouza/job-rule-engine/domain/task"
 )
 
-type CleanBedsRoom struct{}
+type CleanBedsRoom struct {
+	API task.JobAPI
+}
 
 // AssertRule checks if the given job request satisfies the conditions to clean beds in a room.
 // It returns true if the job request meets the following criteria:
@@ -36,9 +39,37 @@ func (cr *CleanBedsRoom) AssertRule(jobRequest domain.JobRequest) bool {
 
 // Execute will create a job to clean the bed(s) in the given room
 func (cr *CleanBedsRoom) Execute(jobRequest domain.JobRequest) domain.JobResult {
+	job := domain.Job{
+		Action: "clean",
+		Department: domain.JDepartment{
+			ID: jobRequest.Department.ID,
+		},
+		Item: domain.JItem{
+			Name: jobRequest.JobItem.DisplayName,
+		},
+	}
+
+	for _, location := range jobRequest.Locations {
+		if location.LocationType != nil && location.LocationType.DisplayName == "Room" {
+			job.Locations = append(job.Locations, domain.JLocation{
+				ID: location.ID,
+			})
+		}
+	}
+
+	if len(job.Locations) == 0 {
+		return domain.JobResult{
+			Request: &jobRequest,
+			Result:  nil,
+			Err:     errors.New("no room location found"),
+		}
+	}
+
+	result, err := cr.API.CreateJob(job)
+
 	return domain.JobResult{
 		Request: &jobRequest,
-		Result:  "",
-		Err:     errors.New("not implemented"),
+		Result:  result,
+		Err:     err,
 	}
 }
