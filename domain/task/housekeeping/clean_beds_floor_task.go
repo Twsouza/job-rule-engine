@@ -37,6 +37,7 @@ func (cr *CleanBedsFloor) AssertRule(jobRequest domain.JobRequest) bool {
 	return false
 }
 
+// Execute will create a job to clean the beds in all rooms with a location type of ‘Room’ on that floor.
 func (cr *CleanBedsFloor) Execute(jobRequest domain.JobRequest) domain.JobResult {
 	return domain.JobResult{
 		Request: &jobRequest,
