@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/Twsouza/job-rule-engine/domain"
+	"github.com/Twsouza/job-rule-engine/domain/task/mock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -120,24 +121,6 @@ func TestRepairJobItemFloor_AssertRule(t *testing.T) {
 	})
 }
 
-type MockAPI struct {
-	CreateJobFunc         func(job domain.Job) (interface{}, error)
-	GetFloorRoomsFunc     func(floorID int) ([]domain.Location, error)
-	GetFloorLocationsFunc func(floorID int) ([]domain.Location, error)
-}
-
-func (m *MockAPI) CreateJob(job domain.Job) (interface{}, error) {
-	return m.CreateJobFunc(job)
-}
-
-func (m *MockAPI) GetFloorRooms(floorID int) ([]domain.Location, error) {
-	return m.GetFloorRoomsFunc(floorID)
-}
-
-func (m *MockAPI) GetFloorLocations(floorID int) ([]domain.Location, error) {
-	return m.GetFloorLocationsFunc(floorID)
-}
-
 func TestRepairJobItemFloor_Execute(t *testing.T) {
 	rj := &RepairJobItemFloor{}
 
@@ -181,7 +164,7 @@ func TestRepairJobItemFloor_Execute(t *testing.T) {
 			Err:     nil,
 		}
 
-		mockAPI := &MockAPI{}
+		mockAPI := &mock.JobAPIMock{}
 		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
 			assert.Equal(t, expectedJob, job)
 			return "job created", nil
@@ -217,7 +200,7 @@ func TestRepairJobItemFloor_Execute(t *testing.T) {
 
 		expectedError := errors.New("failed to get floor locations")
 
-		mockAPI := &MockAPI{}
+		mockAPI := &mock.JobAPIMock{}
 		mockAPI.GetFloorLocationsFunc = func(floorID int) ([]domain.Location, error) {
 			return nil, expectedError
 		}
@@ -265,7 +248,7 @@ func TestRepairJobItemFloor_Execute(t *testing.T) {
 
 		expectedError := errors.New("failed to create job")
 
-		mockAPI := &MockAPI{}
+		mockAPI := &mock.JobAPIMock{}
 		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
 			assert.Equal(t, expectedJob, job)
 			return nil, expectedError

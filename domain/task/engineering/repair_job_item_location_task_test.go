@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/Twsouza/job-rule-engine/domain"
+	"github.com/Twsouza/job-rule-engine/domain/task/mock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -138,7 +139,7 @@ func TestRepairJobItemLocation_Execute(t *testing.T) {
 			Err:     nil,
 		}
 
-		mockAPI := &MockAPI{}
+		mockAPI := &mock.JobAPIMock{}
 		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
 			assert.Equal(t, expectedJob, job)
 			return "success", nil
@@ -187,7 +188,7 @@ func TestRepairJobItemLocation_Execute(t *testing.T) {
 			Err:     errors.New("failed to create job"),
 		}
 
-		mockAPI := &MockAPI{}
+		mockAPI := &mock.JobAPIMock{}
 		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
 			assert.Equal(t, expectedJob, job)
 			return "", errors.New("failed to create job")
