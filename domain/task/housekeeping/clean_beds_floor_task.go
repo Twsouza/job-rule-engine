@@ -9,27 +9,24 @@ import (
 
 type CleanBedsFloor struct{}
 
-// AssertRule checks if the given job request satisfies the conditions for a clean room task.
-// It verifies that the job request belongs to the "Housekeeping" department,
-// the job item is either "Blanket", "Sheets", or "Mattress",
-// and the location is "Room".
-// If all conditions are met, it returns true; otherwise, it returns false.
+// AssertRule checks if the given job request satisfies the conditions for clean the beds in all rooms with a location type of ‘Room’ on that floor.
+// It returns true if the job request meets the following criteria:
+// - The job request must have a non-nil Department with the name "Housekeeping".
+// - The job item display name contains "Blanket", "Sheets", or "Mattress"
+// - The job request must have at least one Location with a LocationType that has a display name of "Floor".
+// Otherwise, it returns false.
 func (cr *CleanBedsFloor) AssertRule(jobRequest domain.JobRequest) bool {
-	if jobRequest.Department != "Housekeeping" {
+	if jobRequest.Department == nil || jobRequest.Department.Name != "Housekeeping" || jobRequest.JobItem == nil {
 		return false
 	}
 
-	match, err := regexp.MatchString(`(?i)\b(?:Blanket|Sheets|Mattress)\b`, jobRequest.JobItem)
+	match, err := regexp.MatchString(`(?i)\b(?:Blanket|Sheets|Mattress)\b`, jobRequest.JobItem.DisplayName)
 	if err != nil || !match {
 		return false
 	}
 
-	if len(jobRequest.Locations) == 0 {
-		return false
-	}
-
 	for _, location := range jobRequest.Locations {
-		if location == "Floor" {
+		if location.LocationType != nil && location.LocationType.DisplayName == "Floor" {
 			return true
 		}
 	}

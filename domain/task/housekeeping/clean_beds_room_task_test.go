@@ -12,9 +12,19 @@ func TestCleanBedsRoom_AssertRule(t *testing.T) {
 
 	t.Run("should return true for valid job request", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Housekeeping",
-			JobItem:    "Sheets",
-			Locations:  []string{"Room"},
+			Department: &domain.Department{
+				Name: "Housekeeping",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Sheets",
+			},
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Room",
+					},
+				},
+			},
 		}
 
 		result := cr.AssertRule(jobRequest)
@@ -23,9 +33,19 @@ func TestCleanBedsRoom_AssertRule(t *testing.T) {
 
 	t.Run("should return false for invalid department", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Engineering",
-			JobItem:    "Sheets",
-			Locations:  []string{"Room"},
+			Department: &domain.Department{
+				Name: "Engineering",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Sheets",
+			},
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Room",
+					},
+				},
+			},
 		}
 
 		result := cr.AssertRule(jobRequest)
@@ -34,9 +54,19 @@ func TestCleanBedsRoom_AssertRule(t *testing.T) {
 
 	t.Run("should return false for invalid job item", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Housekeeping",
-			JobItem:    "Pillow",
-			Locations:  []string{"Room"},
+			Department: &domain.Department{
+				Name: "Housekeeping",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Pillow",
+			},
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Room",
+					},
+				},
+			},
 		}
 
 		result := cr.AssertRule(jobRequest)
@@ -45,20 +75,34 @@ func TestCleanBedsRoom_AssertRule(t *testing.T) {
 
 	t.Run("should return false for empty locations", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Housekeeping",
-			JobItem:    "Sheets",
-			Locations:  []string{},
+			Department: &domain.Department{
+				Name: "Housekeeping",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Sheets",
+			},
+			Locations: []domain.Location{},
 		}
 
 		result := cr.AssertRule(jobRequest)
 		assert.False(t, result)
 	})
 
-	t.Run("should return false for missing room location", func(t *testing.T) {
+	t.Run("should return false for missing room location type", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Housekeeping",
-			JobItem:    "Sheets",
-			Locations:  []string{"Bathroom"},
+			Department: &domain.Department{
+				Name: "Housekeeping",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Sheets",
+			},
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Bathroom",
+					},
+				},
+			},
 		}
 
 		result := cr.AssertRule(jobRequest)
@@ -67,9 +111,17 @@ func TestCleanBedsRoom_AssertRule(t *testing.T) {
 
 	t.Run("should return false for missing job item", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Housekeeping",
-			JobItem:    "",
-			Locations:  []string{"Room"},
+			Department: &domain.Department{
+				Name: "Housekeeping",
+			},
+			JobItem: nil,
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Room",
+					},
+				},
+			},
 		}
 
 		result := cr.AssertRule(jobRequest)

@@ -12,11 +12,11 @@ type RepairJobItemLocation struct{}
 // It returns true if the job request belongs to the "Engineering" department and has a non-empty job item and at least one location.
 // Otherwise, it returns false.
 func (rj RepairJobItemLocation) AssertRule(jobRequest domain.JobRequest) bool {
-	if jobRequest.Department != "Engineering" {
+	if jobRequest.Department == nil || jobRequest.JobItem == nil {
 		return false
 	}
 
-	if jobRequest.JobItem != "" && len(jobRequest.Locations) > 0 {
+	if jobRequest.Department.Name == "Engineering" && jobRequest.JobItem.DisplayName != "" && len(jobRequest.Locations) > 0 {
 		return true
 	}
 

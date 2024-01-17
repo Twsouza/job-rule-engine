@@ -12,9 +12,19 @@ func TestDeliverJobItemRoom_AssertRule(t *testing.T) {
 
 	t.Run("should return true for valid job request", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Room Service",
-			JobItem:    "Food",
-			Locations:  []string{"Floor"},
+			Department: &domain.Department{
+				Name: "Room Service",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Food",
+			},
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Floor",
+					},
+				},
+			},
 		}
 
 		result := dj.AssertRule(jobRequest)
@@ -23,9 +33,19 @@ func TestDeliverJobItemRoom_AssertRule(t *testing.T) {
 
 	t.Run("should return false for invalid department", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Engineering",
-			JobItem:    "Food",
-			Locations:  []string{"Floor"},
+			Department: &domain.Department{
+				Name: "Engineering",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Food",
+			},
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Floor",
+					},
+				},
+			},
 		}
 
 		result := dj.AssertRule(jobRequest)
@@ -34,9 +54,17 @@ func TestDeliverJobItemRoom_AssertRule(t *testing.T) {
 
 	t.Run("should return false for missing job item", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Room Service",
-			JobItem:    "",
-			Locations:  []string{"Floor"},
+			Department: &domain.Department{
+				Name: "Room Service",
+			},
+			JobItem: nil,
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Floor",
+					},
+				},
+			},
 		}
 
 		result := dj.AssertRule(jobRequest)
@@ -45,9 +73,19 @@ func TestDeliverJobItemRoom_AssertRule(t *testing.T) {
 
 	t.Run("should return false for invalid location", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Room Service",
-			JobItem:    "Food",
-			Locations:  []string{"Kitchen"},
+			Department: &domain.Department{
+				Name: "Room Service",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Food",
+			},
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Kitchen",
+					},
+				},
+			},
 		}
 
 		result := dj.AssertRule(jobRequest)

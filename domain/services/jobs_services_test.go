@@ -27,7 +27,7 @@ func TestCreateJob(t *testing.T) {
 	mockRules := []task.JobTask{
 		&MockRule{
 			AssertFunc: func(jobRequest domain.JobRequest) bool {
-				return jobRequest.Department == "Engineering"
+				return jobRequest.Department.Name == "Engineering"
 			},
 			ExecuteFunc: func(jobRequest domain.JobRequest) domain.JobResult {
 				return domain.JobResult{}
@@ -35,7 +35,7 @@ func TestCreateJob(t *testing.T) {
 		},
 		&MockRule{
 			AssertFunc: func(jobRequest domain.JobRequest) bool {
-				return jobRequest.Department == "Engineering"
+				return jobRequest.Department.Name == "Engineering"
 			},
 			ExecuteFunc: func(jobRequest domain.JobRequest) domain.JobResult {
 				return domain.JobResult{}
@@ -43,7 +43,7 @@ func TestCreateJob(t *testing.T) {
 		},
 		&MockRule{
 			AssertFunc: func(jobRequest domain.JobRequest) bool {
-				return jobRequest.Department == "Housekeeping"
+				return jobRequest.Department.Name == "Housekeeping"
 			},
 			ExecuteFunc: func(jobRequest domain.JobRequest) domain.JobResult {
 				return domain.JobResult{}
@@ -58,7 +58,9 @@ func TestCreateJob(t *testing.T) {
 
 	// Define a test job request
 	jobRequest := domain.JobRequest{
-		Department: "Engineering",
+		Department: &domain.Department{
+			Name: "Engineering",
+		},
 	}
 
 	t.Run("should return no errors when all rules execute successfully", func(t *testing.T) {
@@ -72,7 +74,7 @@ func TestCreateJob(t *testing.T) {
 	t.Run("should return an error when a rule fails", func(t *testing.T) {
 		jobService.Tasks = append(jobService.Tasks, &MockRule{
 			AssertFunc: func(jobRequest domain.JobRequest) bool {
-				return jobRequest.Department == "Engineering"
+				return jobRequest.Department.Name == "Engineering"
 			},
 			ExecuteFunc: func(jobRequest domain.JobRequest) domain.JobResult {
 				return domain.JobResult{

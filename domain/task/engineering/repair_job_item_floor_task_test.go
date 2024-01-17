@@ -12,9 +12,19 @@ func TestRepairJobItemFloor_AssertRule(t *testing.T) {
 
 	t.Run("should return true for valid job request", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Engineering",
-			JobItem:    "Air Conditioning",
-			Locations:  []string{"Floor"},
+			Department: &domain.Department{
+				Name: "Engineering",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Air Conditioning",
+			},
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Floor",
+					},
+				},
+			},
 		}
 
 		result := rj.AssertRule(jobRequest)
@@ -23,9 +33,19 @@ func TestRepairJobItemFloor_AssertRule(t *testing.T) {
 
 	t.Run("should return false for invalid department", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Housekeeping",
-			JobItem:    "Air Conditioning",
-			Locations:  []string{"Floor"},
+			Department: &domain.Department{
+				Name: "Housekeeping",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Air Conditioning",
+			},
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Floor",
+					},
+				},
+			},
 		}
 
 		result := rj.AssertRule(jobRequest)
@@ -34,9 +54,17 @@ func TestRepairJobItemFloor_AssertRule(t *testing.T) {
 
 	t.Run("should return false for empty job item", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Engineering",
-			JobItem:    "",
-			Locations:  []string{"Floor"},
+			Department: &domain.Department{
+				Name: "Engineering",
+			},
+			JobItem: nil,
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Floor",
+					},
+				},
+			},
 		}
 
 		result := rj.AssertRule(jobRequest)
@@ -45,9 +73,19 @@ func TestRepairJobItemFloor_AssertRule(t *testing.T) {
 
 	t.Run("should return false for invalid location", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Engineering",
-			JobItem:    "Air Conditioning",
-			Locations:  []string{"Bathroom"},
+			Department: &domain.Department{
+				Name: "Engineering",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Air Conditioning",
+			},
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Room",
+					},
+				},
+			},
 		}
 
 		result := rj.AssertRule(jobRequest)
@@ -56,9 +94,24 @@ func TestRepairJobItemFloor_AssertRule(t *testing.T) {
 
 	t.Run("should return false for multiple locations", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
-			Department: "Engineering",
-			JobItem:    "Air Conditioning",
-			Locations:  []string{"Floor", "Bathroom"},
+			Department: &domain.Department{
+				Name: "Engineering",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Air Conditioning",
+			},
+			Locations: []domain.Location{
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Floor",
+					},
+				},
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Room",
+					},
+				},
+			},
 		}
 
 		result := rj.AssertRule(jobRequest)

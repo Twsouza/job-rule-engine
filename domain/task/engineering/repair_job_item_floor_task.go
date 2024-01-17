@@ -13,15 +13,11 @@ type RepairJobItemFloor struct{}
 // and has at least one location specified, with "Floor" being the only allowed location.
 // It returns true if the job request meets the criteria, otherwise it returns false.
 func (rj RepairJobItemFloor) AssertRule(jobRequest domain.JobRequest) bool {
-	if jobRequest.Department != "Engineering" {
+	if jobRequest.Department == nil || jobRequest.JobItem == nil {
 		return false
 	}
 
-	if jobRequest.JobItem == "" {
-		return false
-	}
-
-	if len(jobRequest.Locations) == 1 && jobRequest.Locations[0] == "Floor" {
+	if jobRequest.Department.Name == "Engineering" && len(jobRequest.Locations) == 1 && jobRequest.Locations[0].LocationType.DisplayName == "Floor" {
 		return true
 	}
 

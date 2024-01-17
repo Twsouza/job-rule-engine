@@ -9,21 +9,18 @@ import (
 type DeliverJobItemLocationTask struct{}
 
 // AssertRule checks if the given job request satisfies the conditions to create a job to deliver that job item to the given locations.
-// AssertRule checks if the given job request satisfies the conditions to deliver an item in all locations.
-// 1. Return false if the job request department is not "Room Service".
-// 2. Return false if the job item is empty.
-// 3. Return true if there are one or more locations specified in the job request.
-// 4. Return false if none of the above conditions are satisfied.
+// The conditions to return true are:
+// - The job request must have a non-nil Department and JobItem.
+// - The Department name must be "Room Service".
+// - The JobItem must have a non-empty DisplayName.
+// - The job request must have at least one location.
+// If any of these conditions are not met, false is returned.
 func (dj *DeliverJobItemLocationTask) AssertRule(jobRequest domain.JobRequest) bool {
-	if jobRequest.Department != "Room Service" {
+	if jobRequest.Department == nil || jobRequest.JobItem == nil {
 		return false
 	}
 
-	if jobRequest.JobItem == "" {
-		return false
-	}
-
-	if len(jobRequest.Locations) > 0 {
+	if jobRequest.Department.Name == "Room Service" && jobRequest.JobItem.DisplayName != "" && len(jobRequest.Locations) > 0 {
 		return true
 	}
 
