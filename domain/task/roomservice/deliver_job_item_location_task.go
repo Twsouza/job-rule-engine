@@ -1,12 +1,13 @@
 package task
 
 import (
-	"errors"
-
 	"github.com/Twsouza/job-rule-engine/domain"
+	"github.com/Twsouza/job-rule-engine/domain/task"
 )
 
-type DeliverJobItemLocationTask struct{}
+type DeliverJobItemLocationTask struct {
+	Api task.JobAPI
+}
 
 // AssertRule checks if the given job request satisfies the conditions to create a job to deliver that job item to the given locations.
 // The conditions to return true are:
@@ -27,10 +28,29 @@ func (dj *DeliverJobItemLocationTask) AssertRule(jobRequest domain.JobRequest) b
 	return false
 }
 
+// Execute will create a job to deliver that job item to the given locations.
 func (dj *DeliverJobItemLocationTask) Execute(jobRequest domain.JobRequest) domain.JobResult {
+	job := domain.Job{
+		Action: "deliver",
+		Department: domain.JDepartment{
+			ID: jobRequest.Department.ID,
+		},
+		Item: domain.JItem{
+			Name: jobRequest.JobItem.DisplayName,
+		},
+	}
+
+	for _, location := range jobRequest.Locations {
+		job.Locations = append(job.Locations, domain.JLocation{
+			ID: location.ID,
+		})
+	}
+
+	result, err := dj.Api.CreateJob(job)
+
 	return domain.JobResult{
 		Request: &jobRequest,
-		Result:  "",
-		Err:     errors.New("not implemented"),
+		Result:  result,
+		Err:     err,
 	}
 }
