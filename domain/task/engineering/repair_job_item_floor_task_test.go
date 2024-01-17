@@ -1,6 +1,7 @@
 package task
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/Twsouza/job-rule-engine/domain"
@@ -116,5 +117,167 @@ func TestRepairJobItemFloor_AssertRule(t *testing.T) {
 
 		result := rj.AssertRule(jobRequest)
 		assert.False(t, result)
+	})
+}
+
+type MockAPI struct {
+	CreateJobFunc         func(job domain.Job) (interface{}, error)
+	GetFloorRoomsFunc     func(floorID int) ([]domain.Location, error)
+	GetFloorLocationsFunc func(floorID int) ([]domain.Location, error)
+}
+
+func (m *MockAPI) CreateJob(job domain.Job) (interface{}, error) {
+	return m.CreateJobFunc(job)
+}
+
+func (m *MockAPI) GetFloorRooms(floorID int) ([]domain.Location, error) {
+	return m.GetFloorRoomsFunc(floorID)
+}
+
+func (m *MockAPI) GetFloorLocations(floorID int) ([]domain.Location, error) {
+	return m.GetFloorLocationsFunc(floorID)
+}
+
+func TestRepairJobItemFloor_Execute(t *testing.T) {
+	rj := &RepairJobItemFloor{}
+
+	t.Run("should execute repair job for valid job request", func(t *testing.T) {
+		jobRequest := domain.JobRequest{
+			Department: &domain.Department{
+				ID:   123,
+				Name: "Engineering",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Air Conditioning",
+			},
+			Locations: []domain.Location{
+				{
+					ID: 1,
+					LocationType: &domain.LocationType{
+						DisplayName: "Floor",
+					},
+				},
+			},
+		}
+
+		expectedJob := domain.Job{
+			Action: "repair",
+			Department: domain.JDepartment{
+				ID: 123,
+			},
+			Item: domain.JItem{
+				Name: "Air Conditioning",
+			},
+			Locations: []domain.JLocation{
+				{
+					ID: 1,
+				},
+			},
+		}
+
+		expectedResult := domain.JobResult{
+			Request: &jobRequest,
+			Result:  "job created",
+			Err:     nil,
+		}
+
+		mockAPI := &MockAPI{}
+		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
+			assert.Equal(t, expectedJob, job)
+			return "job created", nil
+		}
+		mockAPI.GetFloorLocationsFunc = func(floorID int) ([]domain.Location, error) {
+			return []domain.Location{{ID: 1}}, nil
+		}
+
+		rj.API = mockAPI
+
+		result := rj.Execute(jobRequest)
+		assert.Equal(t, expectedResult, result)
+	})
+
+	t.Run("should return error if GetFloorLocations fails", func(t *testing.T) {
+		jobRequest := domain.JobRequest{
+			Department: &domain.Department{
+				ID:   123,
+				Name: "Engineering",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Air Conditioning",
+			},
+			Locations: []domain.Location{
+				{
+					ID: 1,
+					LocationType: &domain.LocationType{
+						DisplayName: "Floor",
+					},
+				},
+			},
+		}
+
+		expectedError := errors.New("failed to get floor locations")
+
+		mockAPI := &MockAPI{}
+		mockAPI.GetFloorLocationsFunc = func(floorID int) ([]domain.Location, error) {
+			return nil, expectedError
+		}
+
+		rj.API = mockAPI
+
+		result := rj.Execute(jobRequest)
+
+		assert.Equal(t, expectedError, result.Err)
+	})
+
+	t.Run("should return error if CreateJob fails", func(t *testing.T) {
+		jobRequest := domain.JobRequest{
+			Department: &domain.Department{
+				ID:   123,
+				Name: "Engineering",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "Air Conditioning",
+			},
+			Locations: []domain.Location{
+				{
+					ID: 1,
+					LocationType: &domain.LocationType{
+						DisplayName: "Floor",
+					},
+				},
+			},
+		}
+
+		expectedJob := domain.Job{
+			Action: "repair",
+			Department: domain.JDepartment{
+				ID: 123,
+			},
+			Item: domain.JItem{
+				Name: "Air Conditioning",
+			},
+			Locations: []domain.JLocation{
+				{
+					ID: 1,
+				},
+			},
+		}
+
+		expectedError := errors.New("failed to create job")
+
+		mockAPI := &MockAPI{}
+		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
+			assert.Equal(t, expectedJob, job)
+			return nil, expectedError
+		}
+		mockAPI.GetFloorLocationsFunc = func(floorID int) ([]domain.Location, error) {
+			return []domain.Location{{ID: 1}}, nil
+		}
+
+		rj.API = mockAPI
+
+		result := rj.Execute(jobRequest)
+
+		assert.Equal(t, expectedError, result.Err)
 	})
 }

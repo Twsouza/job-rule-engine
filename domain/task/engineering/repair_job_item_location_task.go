@@ -1,12 +1,13 @@
 package task
 
 import (
-	"errors"
-
 	"github.com/Twsouza/job-rule-engine/domain"
+	"github.com/Twsouza/job-rule-engine/domain/task"
 )
 
-type RepairJobItemLocation struct{}
+type RepairJobItemLocation struct {
+	API task.JobAPI
+}
 
 // AssertRule checks if the given job request meets the criteria for a repair job item at a location.
 // It returns true if the job request belongs to the "Engineering" department and has a non-empty job item and at least one location.
@@ -25,9 +26,27 @@ func (rj RepairJobItemLocation) AssertRule(jobRequest domain.JobRequest) bool {
 
 // Execute will create a job to repair the given job item at the given location(s).
 func (rj RepairJobItemLocation) Execute(jobRequest domain.JobRequest) domain.JobResult {
+	job := domain.Job{
+		Action: "repair",
+		Department: domain.JDepartment{
+			ID: jobRequest.Department.ID,
+		},
+		Item: domain.JItem{
+			Name: jobRequest.JobItem.DisplayName,
+		},
+	}
+
+	for _, location := range jobRequest.Locations {
+		job.Locations = append(job.Locations, domain.JLocation{
+			ID: location.ID,
+		})
+	}
+
+	result, err := rj.API.CreateJob(job)
+
 	return domain.JobResult{
 		Request: &jobRequest,
-		Result:  "",
-		Err:     errors.New("not implemented"),
+		Result:  result,
+		Err:     err,
 	}
 }

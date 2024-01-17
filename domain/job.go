@@ -1,6 +1,5 @@
 package domain
 
-// JobRequest represents a job creation request
 type JobRequest struct {
 	Department *Department `json:"department"`
 	JobItem    *JobItem    `json:"job_item"`
@@ -14,14 +13,20 @@ type JobResult struct {
 }
 
 type Job struct {
-	Item struct {
-		Name string `json:"name"`
-	} `json:"item"`
-	Department struct {
-		ID int `json:"id"`
-	} `json:"department"`
-	Location []struct {
-		ID int `json:"id"`
-	} `json:"location"`
-	Action string `json:"action"`
+	Item       JItem       `json:"item"`
+	Department JDepartment `json:"department"`
+	Locations  []JLocation `json:"location"`
+	Action     string      `json:"action"`
+}
+
+type JItem struct {
+	Name string `json:"name"`
+}
+
+type JDepartment struct {
+	ID int `json:"id"`
+}
+
+type JLocation struct {
+	ID int `json:"id"`
 }

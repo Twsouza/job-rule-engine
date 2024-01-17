@@ -1,6 +1,7 @@
 package task
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/Twsouza/job-rule-engine/domain"
@@ -88,5 +89,113 @@ func TestRepairJobItemLocation_AssertRule(t *testing.T) {
 
 		result := rj.AssertRule(jobRequest)
 		assert.False(t, result)
+	})
+}
+
+func TestRepairJobItemLocation_Execute(t *testing.T) {
+	rj := &RepairJobItemLocation{}
+
+	t.Run("should execute repair job with valid job request", func(t *testing.T) {
+		jobRequest := domain.JobRequest{
+			Department: &domain.Department{
+				ID:   1,
+				Name: "Engineering",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "TV",
+			},
+			Locations: []domain.Location{
+				{
+					ID: 1,
+				},
+				{
+					ID: 2,
+				},
+			},
+		}
+
+		expectedJob := domain.Job{
+			Action: "repair",
+			Department: domain.JDepartment{
+				ID: 1,
+			},
+			Item: domain.JItem{
+				Name: "TV",
+			},
+			Locations: []domain.JLocation{
+				{
+					ID: 1,
+				},
+				{
+					ID: 2,
+				},
+			},
+		}
+
+		expectedResult := domain.JobResult{
+			Request: &jobRequest,
+			Result:  "success",
+			Err:     nil,
+		}
+
+		mockAPI := &MockAPI{}
+		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
+			assert.Equal(t, expectedJob, job)
+			return "success", nil
+		}
+
+		rj.API = mockAPI
+
+		result := rj.Execute(jobRequest)
+		assert.Equal(t, expectedResult, result)
+	})
+
+	t.Run("should return error for invalid job request", func(t *testing.T) {
+		jobRequest := domain.JobRequest{
+			Department: &domain.Department{
+				ID:   2,
+				Name: "Housekeeping",
+			},
+			JobItem: &domain.JobItem{
+				DisplayName: "TV",
+			},
+			Locations: []domain.Location{
+				{
+					ID: 1,
+				},
+			},
+		}
+
+		expectedJob := domain.Job{
+			Action: "repair",
+			Department: domain.JDepartment{
+				ID: 2,
+			},
+			Item: domain.JItem{
+				Name: "TV",
+			},
+			Locations: []domain.JLocation{
+				{
+					ID: 1,
+				},
+			},
+		}
+
+		expectedResult := domain.JobResult{
+			Request: &jobRequest,
+			Result:  "",
+			Err:     errors.New("failed to create job"),
+		}
+
+		mockAPI := &MockAPI{}
+		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
+			assert.Equal(t, expectedJob, job)
+			return "", errors.New("failed to create job")
+		}
+
+		rj.API = mockAPI
+
+		result := rj.Execute(jobRequest)
+		assert.Equal(t, expectedResult, result)
 	})
 }
