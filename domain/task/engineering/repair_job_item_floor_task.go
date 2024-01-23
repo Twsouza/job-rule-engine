@@ -1,4 +1,4 @@
-package task
+package engineering
 
 import (
 	"github.com/Twsouza/job-rule-engine/domain"
