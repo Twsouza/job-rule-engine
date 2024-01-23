@@ -1,4 +1,4 @@
-package task
+package roomservice
 
 import (
 	"github.com/Twsouza/job-rule-engine/domain"
