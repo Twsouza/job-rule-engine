@@ -28,7 +28,7 @@ func TestCreateJob(t *testing.T) {
 				},
 			}
 		}
-		mockJobService.LoadJobFunc = func(dto *dto.JobRequestDto) (*domain.JobRequest, error) {
+		mockJobService.LoadJobFunc = func(dto *dto.JobRequestDto) (*domain.JobRequest, []error) {
 			jr := &domain.JobRequest{
 				Department: &domain.Department{
 					ID:   1,
@@ -87,7 +87,7 @@ func TestCreateJob(t *testing.T) {
 		mockJobService.CreateJobFunc = func(jobRequest *domain.JobRequest) []domain.JobResult {
 			return []domain.JobResult{}
 		}
-		mockJobService.LoadJobFunc = func(dto *dto.JobRequestDto) (*domain.JobRequest, error) {
+		mockJobService.LoadJobFunc = func(dto *dto.JobRequestDto) (*domain.JobRequest, []error) {
 			jr := &domain.JobRequest{
 				Department: &domain.Department{
 					ID:   1,

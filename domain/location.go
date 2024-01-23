@@ -5,6 +5,7 @@ type LocationType struct {
 	DisplayName string `json:"displayName"`
 }
 
+// ParentLocation is created separately from Location to avoid circular reference.
 type ParentLocation struct {
 	ID          int    `json:"id"`
 	Name        string `json:"name"`

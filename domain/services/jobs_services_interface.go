@@ -7,5 +7,5 @@ import (
 
 type JobServiceInterface interface {
 	CreateJob(jobRequest *domain.JobRequest) []domain.JobResult
-	LoadJob(dto *dto.JobRequestDto) (*domain.JobRequest, error)
+	LoadJob(dto *dto.JobRequestDto) (*domain.JobRequest, []error)
 }
