@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/Twsouza/job-rule-engine/domain"
-	"github.com/Twsouza/job-rule-engine/domain/task"
+	"github.com/Twsouza/job-rule-engine/domain/tasks"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -24,7 +24,7 @@ func (mr *MockRule) Execute(jobRequest domain.JobRequest) domain.JobResult {
 
 func TestCreateJob(t *testing.T) {
 	// Creates 2 rules that will execute concurrently
-	mockRules := []task.JobTask{
+	mockRules := []tasks.JobTask{
 		&MockRule{
 			AssertFunc: func(jobRequest domain.JobRequest) bool {
 				return jobRequest.Department.Name == "Engineering"
@@ -57,7 +57,7 @@ func TestCreateJob(t *testing.T) {
 	}
 
 	// Define a test job request
-	jobRequest := domain.JobRequest{
+	jobRequest := &domain.JobRequest{
 		Department: &domain.Department{
 			Name: "Engineering",
 		},

@@ -5,14 +5,16 @@ type LocationType struct {
 	DisplayName string `json:"displayName"`
 }
 
+type ParentLocation struct {
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	DisplayName string `json:"displayName"`
+}
+
 type Location struct {
-	ID             int    `json:"id"`
-	Name           string `json:"name"`
-	DisplayName    string `json:"displayName"`
-	ParentLocation struct {
-		ID          int    `json:"id"`
-		Name        string `json:"name"`
-		DisplayName string `json:"displayName"`
-	} `json:"parentLocation"`
-	LocationType *LocationType `json:"locationType"`
+	ID             int             `json:"id"`
+	Name           string          `json:"name"`
+	DisplayName    string          `json:"displayName"`
+	ParentLocation *ParentLocation `json:"parentLocation,omitempty"`
+	LocationType   *LocationType   `json:"locationType,omitempty"`
 }

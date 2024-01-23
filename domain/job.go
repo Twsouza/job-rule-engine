@@ -2,7 +2,7 @@ package domain
 
 type JobRequest struct {
 	Department *Department `json:"department"`
-	JobItem    *JobItem    `json:"job_item"`
+	JobItem    *JobItem    `json:"jobItem"`
 	Locations  []Location  `json:"locations"`
 }
 
