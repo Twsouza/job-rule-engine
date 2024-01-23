@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/Twsouza/job-rule-engine/domain"
-	"github.com/Twsouza/job-rule-engine/domain/task/mock"
+	"github.com/Twsouza/job-rule-engine/domain/tasks/mock"
 	"github.com/stretchr/testify/assert"
 )
 

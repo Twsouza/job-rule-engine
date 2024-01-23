@@ -2,11 +2,11 @@ package roomservice
 
 import (
 	"github.com/Twsouza/job-rule-engine/domain"
-	"github.com/Twsouza/job-rule-engine/domain/task"
+	"github.com/Twsouza/job-rule-engine/domain/tasks"
 )
 
 type DeliverJobItemLocationTask struct {
-	Api task.JobAPI
+	Api tasks.JobAPI
 }
 
 // AssertRule checks if the given job request satisfies the conditions to create a job to deliver that job item to the given locations.

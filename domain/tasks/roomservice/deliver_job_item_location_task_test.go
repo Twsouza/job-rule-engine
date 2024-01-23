@@ -1,109 +1,104 @@
-package engineering
+package roomservice
 
 import (
 	"errors"
 	"testing"
 
 	"github.com/Twsouza/job-rule-engine/domain"
-	"github.com/Twsouza/job-rule-engine/domain/task/mock"
+	"github.com/Twsouza/job-rule-engine/domain/tasks/mock"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRepairJobItemLocation_AssertRule(t *testing.T) {
-	rj := &RepairJobItemLocation{}
+func TestDeliverJobItemLocation_AssertRule(t *testing.T) {
+	dj := &DeliverJobItemLocationTask{}
 
 	t.Run("should return true for valid job request", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
 			Department: &domain.Department{
-				Name: "Engineering",
+				Name: "Room Service",
 			},
 			JobItem: &domain.JobItem{
-				DisplayName: "TV",
+				DisplayName: "Food",
 			},
 			Locations: []domain.Location{
 				{
 					LocationType: &domain.LocationType{
-						DisplayName: "Room",
-					},
-				},
-				{
-					LocationType: &domain.LocationType{
-						DisplayName: "Room",
+						DisplayName: "Floor",
 					},
 				},
 			},
 		}
-		result := rj.AssertRule(jobRequest)
+
+		result := dj.AssertRule(jobRequest)
 		assert.True(t, result)
 	})
 
 	t.Run("should return false for invalid department", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
 			Department: &domain.Department{
-				Name: "Housekeeping",
+				Name: "Engineering",
 			},
 			JobItem: &domain.JobItem{
-				DisplayName: "TV",
+				DisplayName: "Food",
 			},
 			Locations: []domain.Location{
 				{
 					LocationType: &domain.LocationType{
-						DisplayName: "Room",
+						DisplayName: "Floor",
 					},
 				},
 			},
 		}
 
-		result := rj.AssertRule(jobRequest)
+		result := dj.AssertRule(jobRequest)
 		assert.False(t, result)
 	})
 
 	t.Run("should return false for missing job item", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
 			Department: &domain.Department{
-				Name: "Engineering",
+				Name: "Room Service",
 			},
 			JobItem: nil,
 			Locations: []domain.Location{
 				{
 					LocationType: &domain.LocationType{
-						DisplayName: "Room",
+						DisplayName: "Floor",
 					},
 				},
 			},
 		}
 
-		result := rj.AssertRule(jobRequest)
+		result := dj.AssertRule(jobRequest)
 		assert.False(t, result)
 	})
 
 	t.Run("should return false for empty locations", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
 			Department: &domain.Department{
-				Name: "Engineering",
+				Name: "Room Service",
 			},
 			JobItem: &domain.JobItem{
-				DisplayName: "TV",
+				DisplayName: "Food",
 			},
 			Locations: []domain.Location{},
 		}
 
-		result := rj.AssertRule(jobRequest)
+		result := dj.AssertRule(jobRequest)
 		assert.False(t, result)
 	})
 }
 
-func TestRepairJobItemLocation_Execute(t *testing.T) {
-	rj := &RepairJobItemLocation{}
+func TestDeliverJobItemLocation_Execute(t *testing.T) {
+	dj := &DeliverJobItemLocationTask{}
 
-	t.Run("should execute repair job with valid job request", func(t *testing.T) {
+	t.Run("should execute job request and return job result", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
 			Department: &domain.Department{
-				ID:   1,
-				Name: "Engineering",
+				ID: 1,
 			},
 			JobItem: &domain.JobItem{
-				DisplayName: "TV",
+				DisplayName: "Food",
 			},
 			Locations: []domain.Location{
 				{
@@ -116,12 +111,12 @@ func TestRepairJobItemLocation_Execute(t *testing.T) {
 		}
 
 		expectedJob := domain.Job{
-			Action: "repair",
+			Action: "deliver",
 			Department: domain.JDepartment{
 				ID: 1,
 			},
 			Item: domain.JItem{
-				Name: "TV",
+				Name: "Food",
 			},
 			Locations: []domain.JLocation{
 				{
@@ -135,30 +130,29 @@ func TestRepairJobItemLocation_Execute(t *testing.T) {
 
 		expectedResult := domain.JobResult{
 			Request: &jobRequest,
-			Result:  "success",
+			Result:  "job result",
 			Err:     nil,
 		}
 
 		mockAPI := &mock.JobAPIMock{}
 		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
 			assert.Equal(t, expectedJob, job)
-			return "success", nil
+			return "job result", nil
 		}
 
-		rj.API = mockAPI
+		dj.Api = mockAPI
 
-		result := rj.Execute(jobRequest)
+		result := dj.Execute(jobRequest)
 		assert.Equal(t, expectedResult, result)
 	})
 
-	t.Run("should return error for invalid job request", func(t *testing.T) {
+	t.Run("should execute job request and return error", func(t *testing.T) {
 		jobRequest := domain.JobRequest{
 			Department: &domain.Department{
-				ID:   2,
-				Name: "Housekeeping",
+				ID: 1,
 			},
 			JobItem: &domain.JobItem{
-				DisplayName: "TV",
+				DisplayName: "Food",
 			},
 			Locations: []domain.Location{
 				{
@@ -168,12 +162,12 @@ func TestRepairJobItemLocation_Execute(t *testing.T) {
 		}
 
 		expectedJob := domain.Job{
-			Action: "repair",
+			Action: "deliver",
 			Department: domain.JDepartment{
-				ID: 2,
+				ID: 1,
 			},
 			Item: domain.JItem{
-				Name: "TV",
+				Name: "Food",
 			},
 			Locations: []domain.JLocation{
 				{
@@ -182,21 +176,17 @@ func TestRepairJobItemLocation_Execute(t *testing.T) {
 			},
 		}
 
-		expectedResult := domain.JobResult{
-			Request: &jobRequest,
-			Result:  "",
-			Err:     errors.New("failed to create job"),
-		}
+		expectedError := errors.New("job creation failed")
 
 		mockAPI := &mock.JobAPIMock{}
 		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
 			assert.Equal(t, expectedJob, job)
-			return "", errors.New("failed to create job")
+			return nil, expectedError
 		}
 
-		rj.API = mockAPI
+		dj.Api = mockAPI
 
-		result := rj.Execute(jobRequest)
-		assert.Equal(t, expectedResult, result)
+		result := dj.Execute(jobRequest)
+		assert.Equal(t, expectedError, result.Err)
 	})
 }

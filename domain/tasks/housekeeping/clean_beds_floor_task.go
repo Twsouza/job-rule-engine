@@ -4,11 +4,11 @@ import (
 	"regexp"
 
 	"github.com/Twsouza/job-rule-engine/domain"
-	"github.com/Twsouza/job-rule-engine/domain/task"
+	"github.com/Twsouza/job-rule-engine/domain/tasks"
 )
 
 type CleanBedsFloor struct {
-	API task.JobAPI
+	API tasks.JobAPI
 }
 
 // AssertRule checks if the given job request satisfies the conditions for clean the beds in all rooms with a location type of ‘Room’ on that floor.
