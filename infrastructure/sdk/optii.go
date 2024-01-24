@@ -246,7 +246,7 @@ func (o *OptiiSdk) GetFloorRooms(floorID int) ([]domain.Location, error) {
 			break
 		}
 
-		next = int32(locationsQuery.PageInfo.EndCursor)
+		first = int32(locationsQuery.PageInfo.EndCursor)
 	}
 
 	return locations, nil
