@@ -152,7 +152,7 @@ func TestCleanBedsFloor_Execute(t *testing.T) {
 			},
 		}
 
-		expectedJob := domain.Job{
+		expectedJob := &domain.Job{
 			Action: "clean",
 			Department: domain.JDepartment{
 				ID: 1,
@@ -173,7 +173,7 @@ func TestCleanBedsFloor_Execute(t *testing.T) {
 		}
 
 		mockAPI := &mock.JobAPIMock{}
-		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
+		mockAPI.CreateJobFunc = func(job *domain.Job) (interface{}, error) {
 			assert.Equal(t, expectedJob, job)
 			return "job created", nil
 		}
@@ -238,7 +238,7 @@ func TestCleanBedsFloor_Execute(t *testing.T) {
 			},
 		}
 
-		expectedJob := domain.Job{
+		expectedJob := &domain.Job{
 			Action: "clean",
 			Department: domain.JDepartment{
 				ID: 1,
@@ -259,7 +259,7 @@ func TestCleanBedsFloor_Execute(t *testing.T) {
 		mockAPI.GetFloorRoomsFunc = func(floorID int) ([]domain.Location, error) {
 			return []domain.Location{{ID: 1}}, nil
 		}
-		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
+		mockAPI.CreateJobFunc = func(job *domain.Job) (interface{}, error) {
 			assert.Equal(t, expectedJob, job)
 			return "", expectedError
 		}

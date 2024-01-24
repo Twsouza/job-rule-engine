@@ -26,7 +26,7 @@ func (rj RepairJobItemLocation) AssertRule(jobRequest domain.JobRequest) bool {
 
 // Execute will create a job to repair the given job item at the given location(s).
 func (rj RepairJobItemLocation) Execute(jobRequest domain.JobRequest) domain.JobResult {
-	job := domain.Job{
+	job := &domain.Job{
 		Action: "repair",
 		Department: domain.JDepartment{
 			ID: jobRequest.Department.ID,

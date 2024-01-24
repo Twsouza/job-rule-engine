@@ -8,13 +8,6 @@ import (
 	"regexp"
 )
 
-type ErrorResponse struct {
-	Type   string `json:"type"`
-	Title  string `json:"title"`
-	Status int    `json:"status"`
-	Detail string `json:"detail"`
-}
-
 func ParseResponse(resp *http.Response, data interface{}) error {
 	if resp.StatusCode == http.StatusOK || resp.StatusCode < http.StatusCreated {
 		err := json.NewDecoder(resp.Body).Decode(data)

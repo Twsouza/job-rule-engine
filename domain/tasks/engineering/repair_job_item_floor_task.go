@@ -31,7 +31,7 @@ func (rj RepairJobItemFloor) Execute(jobRequest domain.JobRequest) domain.JobRes
 		Request: &jobRequest,
 	}
 
-	job := domain.Job{
+	job := &domain.Job{
 		Action: "repair",
 		Department: domain.JDepartment{
 			ID: jobRequest.Department.ID,

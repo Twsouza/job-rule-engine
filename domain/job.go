@@ -1,5 +1,7 @@
 package domain
 
+import "time"
+
 type JobRequest struct {
 	Department *Department `json:"department"`
 	JobItem    *JobItem    `json:"jobItem"`
@@ -29,4 +31,30 @@ type JDepartment struct {
 
 type JLocation struct {
 	ID int `json:"id"`
+}
+
+type JobCreated struct {
+	ID   int `json:"id"`
+	Item struct {
+		Displayname string `json:"displayname"`
+	} `json:"item"`
+	Type        string `json:"type"`
+	Priority    string `json:"priority"`
+	Action      string `json:"action"`
+	Attachments any    `json:"attachments"`
+	Locations   []struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	} `json:"locations"`
+	Departments []struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	} `json:"departments"`
+	Roles []struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	} `json:"roles"`
+	Notes    any       `json:"notes"`
+	Assignee any       `json:"assignee"`
+	DueBy    time.Time `json:"dueBy"`
 }

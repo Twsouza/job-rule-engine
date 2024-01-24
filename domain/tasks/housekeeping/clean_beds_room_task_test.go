@@ -153,7 +153,7 @@ func TestCleanBedsRoom_Execute(t *testing.T) {
 			},
 		}
 
-		expectedJob := domain.Job{
+		expectedJob := &domain.Job{
 			Action: "clean",
 			Department: domain.JDepartment{
 				ID: 1,
@@ -175,7 +175,7 @@ func TestCleanBedsRoom_Execute(t *testing.T) {
 		}
 
 		mockAPI := &mock.JobAPIMock{}
-		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
+		mockAPI.CreateJobFunc = func(job *domain.Job) (interface{}, error) {
 			assert.Equal(t, expectedJob, job)
 			return "success", nil
 		}
@@ -212,7 +212,7 @@ func TestCleanBedsRoom_Execute(t *testing.T) {
 		}
 
 		mockAPI := &mock.JobAPIMock{}
-		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
+		mockAPI.CreateJobFunc = func(job *domain.Job) (interface{}, error) {
 			t.Error("CreateJob should not be called")
 			return "", nil
 		}

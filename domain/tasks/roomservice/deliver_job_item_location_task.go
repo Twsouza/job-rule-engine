@@ -6,7 +6,7 @@ import (
 )
 
 type DeliverJobItemLocationTask struct {
-	Api tasks.JobAPI
+	API tasks.JobAPI
 }
 
 // AssertRule checks if the given job request satisfies the conditions to create a job to deliver that job item to the given locations.
@@ -30,7 +30,7 @@ func (dj *DeliverJobItemLocationTask) AssertRule(jobRequest domain.JobRequest) b
 
 // Execute will create a job to deliver that job item to the given locations.
 func (dj *DeliverJobItemLocationTask) Execute(jobRequest domain.JobRequest) domain.JobResult {
-	job := domain.Job{
+	job := &domain.Job{
 		Action: "deliver",
 		Department: domain.JDepartment{
 			ID: jobRequest.Department.ID,
@@ -46,7 +46,7 @@ func (dj *DeliverJobItemLocationTask) Execute(jobRequest domain.JobRequest) doma
 		})
 	}
 
-	result, err := dj.Api.CreateJob(job)
+	result, err := dj.API.CreateJob(job)
 
 	return domain.JobResult{
 		Request: &jobRequest,

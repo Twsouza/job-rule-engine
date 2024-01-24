@@ -16,11 +16,18 @@ func NewJobService() *services.JobService {
 		panic(err)
 	}
 
-	// TODO: create the JobApi implementation
-	deliverJobItemLocation := rs.DeliverJobItemLocationTask{}
-	deliverJobItemRoom := rs.DeliverJobItemRoomTask{}
-	cleanBedsRoom := hk.CleanBedsRoom{}
-	cleanBedsFloor := hk.CleanBedsFloor{}
+	deliverJobItemLocation := rs.DeliverJobItemLocationTask{
+		API: optiSdk,
+	}
+	deliverJobItemRoom := rs.DeliverJobItemRoomTask{
+		API: optiSdk,
+	}
+	cleanBedsRoom := hk.CleanBedsRoom{
+		API: optiSdk,
+	}
+	cleanBedsFloor := hk.CleanBedsFloor{
+		API: optiSdk,
+	}
 	taskList := []tasks.JobTask{
 		&deliverJobItemLocation,
 		&deliverJobItemRoom,

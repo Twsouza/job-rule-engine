@@ -115,7 +115,7 @@ func TestRepairJobItemLocation_Execute(t *testing.T) {
 			},
 		}
 
-		expectedJob := domain.Job{
+		expectedJob := &domain.Job{
 			Action: "repair",
 			Department: domain.JDepartment{
 				ID: 1,
@@ -140,7 +140,7 @@ func TestRepairJobItemLocation_Execute(t *testing.T) {
 		}
 
 		mockAPI := &mock.JobAPIMock{}
-		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
+		mockAPI.CreateJobFunc = func(job *domain.Job) (interface{}, error) {
 			assert.Equal(t, expectedJob, job)
 			return "success", nil
 		}
@@ -167,7 +167,7 @@ func TestRepairJobItemLocation_Execute(t *testing.T) {
 			},
 		}
 
-		expectedJob := domain.Job{
+		expectedJob := &domain.Job{
 			Action: "repair",
 			Department: domain.JDepartment{
 				ID: 2,
@@ -189,7 +189,7 @@ func TestRepairJobItemLocation_Execute(t *testing.T) {
 		}
 
 		mockAPI := &mock.JobAPIMock{}
-		mockAPI.CreateJobFunc = func(job domain.Job) (interface{}, error) {
+		mockAPI.CreateJobFunc = func(job *domain.Job) (interface{}, error) {
 			assert.Equal(t, expectedJob, job)
 			return "", errors.New("failed to create job")
 		}

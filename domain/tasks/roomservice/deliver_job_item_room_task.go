@@ -33,7 +33,7 @@ func (dj *DeliverJobItemRoomTask) Execute(jobRequest domain.JobRequest) domain.J
 		Request: &jobRequest,
 	}
 
-	job := domain.Job{
+	job := &domain.Job{
 		Action: "deliver",
 		Department: domain.JDepartment{
 			ID: jobRequest.Department.ID,

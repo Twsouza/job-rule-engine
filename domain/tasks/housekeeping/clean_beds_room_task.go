@@ -39,7 +39,7 @@ func (cr *CleanBedsRoom) AssertRule(jobRequest domain.JobRequest) bool {
 
 // Execute will create a job to clean the bed(s) in the given room
 func (cr *CleanBedsRoom) Execute(jobRequest domain.JobRequest) domain.JobResult {
-	job := domain.Job{
+	job := &domain.Job{
 		Action: "clean",
 		Department: domain.JDepartment{
 			ID: jobRequest.Department.ID,

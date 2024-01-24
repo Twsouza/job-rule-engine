@@ -42,7 +42,7 @@ func (cr *CleanBedsFloor) Execute(jobRequest domain.JobRequest) domain.JobResult
 		Request: &jobRequest,
 	}
 
-	job := domain.Job{
+	job := &domain.Job{
 		Action: "clean",
 		Department: domain.JDepartment{
 			ID: jobRequest.Department.ID,
