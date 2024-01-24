@@ -13,9 +13,10 @@ type JobService struct {
 	OptiiAPI OptiiApiInterface
 }
 
-func NewJobService(tasks []tasks.JobTask) *JobService {
+func NewJobService(tasks []tasks.JobTask, optiiAPI OptiiApiInterface) *JobService {
 	return &JobService{
-		Tasks: tasks,
+		Tasks:    tasks,
+		OptiiAPI: optiiAPI,
 	}
 }
 
