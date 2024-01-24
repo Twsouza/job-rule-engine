@@ -76,11 +76,10 @@ func TestCreateJob(t *testing.T) {
 		// Call the CreateJob function
 		jr := jobService.CreateJob(jobRequest)
 		assert.Len(t, jr, 3)
-		// TODO: fix intermittent test failure
-		// sometimes the 3rd rule is executed before the 2nd rule
 		// assert.Nil(t, jr[0].Err)
 		// assert.Nil(t, jr[1].Err)
 		// assert.NotNil(t, jr[2].Err)
+		assert.Contains(t, jr, domain.JobResult{Err: errors.New("failed to execute rule")})
 	})
 }
 
