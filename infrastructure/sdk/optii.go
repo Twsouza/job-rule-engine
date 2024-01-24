@@ -68,6 +68,8 @@ func RetryableHttpClient(retryMax int) (*http.Client, error) {
 	// It will be used to set the Authorization header
 	client.RequestLogHook = func(logger retryablehttp.Logger, request *http.Request, retryNumber int) {
 		request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", auth.AccessToken))
+		request.Header.Set("Content-Type", "application/json")
+		request.Header.Set("Accept", "application/json")
 	}
 
 	return client.StandardClient(), nil

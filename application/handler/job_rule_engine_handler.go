@@ -26,7 +26,7 @@ func (jh *JobRuleEngineHandler) CreateJob(c *gin.Context) {
 	}
 
 	jobReq, errs := jh.JobService.LoadJob(req)
-	if errs != nil {
+	if len(errs) > 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": errs})
 		return
 	}
