@@ -14,14 +14,14 @@ type DeliverJobItemLocationTask struct {
 // - The job request must have a non-nil Department and JobItem.
 // - The Department name must be "Room Service".
 // - The JobItem must have a non-empty DisplayName.
-// - The job request must have at least one location.
+// - The job request must have more than one location.
 // If any of these conditions are not met, false is returned.
 func (dj *DeliverJobItemLocationTask) AssertRule(jobRequest domain.JobRequest) bool {
 	if jobRequest.Department == nil || jobRequest.JobItem == nil {
 		return false
 	}
 
-	if jobRequest.Department.Name == "Room Service" && jobRequest.JobItem.DisplayName != "" && len(jobRequest.Locations) > 0 {
+	if jobRequest.Department.Name == "Room Service" && jobRequest.JobItem.DisplayName != "" && len(jobRequest.Locations) > 1 {
 		return true
 	}
 
