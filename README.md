@@ -55,6 +55,26 @@ To simulate the production environment, run `make run` and will spin up the cont
 
 The `Dockerfile` is already configured to build the application for production environment and run it.
 
+## How to use
+
+Create a .env file with the variables in the .env.example file. You can copy the file and change the values.
+
+```bash
+cp .env.example .env
+```
+
+Send a POST request to `http://localhost:3000/v1/jobs` with the following payload:
+
+```json
+{
+  "departmentId": 13,
+  "jobItemId": 184,
+  "locationsId": [
+    2
+  ]
+}
+```
+
 ## What's next
 
 - [ ] Add more E2E tests
