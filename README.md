@@ -54,3 +54,9 @@ OPTII_CLIENT_ID="${OPTII_CLIENT_ID}"  OPTII_CLIENT_SECRET="${OPTII_CLIENT_SECRET
 To simulate the production environment, run `make run` and will spin up the container and run the application.
 
 The `Dockerfile` is already configured to build the application for production environment and run it.
+
+## What's next
+
+- [ ] Add more E2E tests
+- [ ] Improve the error handling and logging
+- [ ] Improve observability
