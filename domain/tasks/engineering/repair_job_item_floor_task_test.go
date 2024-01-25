@@ -161,7 +161,7 @@ func TestRepairJobItemFloor_Execute(t *testing.T) {
 		expectedResult := domain.JobResult{
 			Request: &jobRequest,
 			Result:  "job created",
-			Err:     nil,
+			Err:     "",
 		}
 
 		mockAPI := &mock.JobAPIMock{}
@@ -209,7 +209,7 @@ func TestRepairJobItemFloor_Execute(t *testing.T) {
 
 		result := rj.Execute(jobRequest)
 
-		assert.Equal(t, expectedError, result.Err)
+		assert.Equal(t, expectedError.Error(), result.Err)
 	})
 
 	t.Run("should return error if CreateJob fails", func(t *testing.T) {
@@ -261,6 +261,6 @@ func TestRepairJobItemFloor_Execute(t *testing.T) {
 
 		result := rj.Execute(jobRequest)
 
-		assert.Equal(t, expectedError, result.Err)
+		assert.Equal(t, expectedError.Error(), result.Err)
 	})
 }

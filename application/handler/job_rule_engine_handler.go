@@ -20,14 +20,31 @@ func NewJobRuleEngineHandler(js services.JobServiceInterface) *JobRuleEngineHand
 
 func (jh *JobRuleEngineHandler) CreateJob(c *gin.Context) {
 	req := &dto.JobRequestDto{}
-	if err := c.Bind(req); err != nil {
+	if err := c.ShouldBindJSON(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if req.DepartmentID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "department_id is required"})
+		return
+	}
+	if req.JobItemID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "job_item_id is required"})
+		return
+	}
+	if len(req.LocationsID) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "locations_id is required"})
 		return
 	}
 
 	jobReq, errs := jh.JobService.LoadJob(req)
 	if len(errs) > 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": errs})
+		errsStr := []string{}
+		for _, err := range errs {
+			errsStr = append(errsStr, err.Error())
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"error": errsStr})
 		return
 	}
 
@@ -37,5 +54,9 @@ func (jh *JobRuleEngineHandler) CreateJob(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, results)
+	// Since a job request can match multiple rules, we return an array of job results.
+	// Each job result contains the job request, the result of the rule, and any errors that occurred.
+	// That's why we always return a 200 status code. To indicate that all rules were executed.
+	// The consumer of this API can then decide what to do with the results.
+	c.JSON(http.StatusOK, results)
 }

@@ -54,7 +54,7 @@ func (cr *CleanBedsFloor) Execute(jobRequest domain.JobRequest) domain.JobResult
 
 	locations, err := cr.API.GetFloorRooms(jobRequest.Locations[0].ID)
 	if err != nil {
-		jr.Err = err
+		jr.Err = err.Error()
 		return jr
 	}
 
@@ -64,7 +64,16 @@ func (cr *CleanBedsFloor) Execute(jobRequest domain.JobRequest) domain.JobResult
 		})
 	}
 
-	jr.Result, jr.Err = cr.API.CreateJob(job)
+	if len(job.Locations) == 0 {
+		jr.Err = "no locations found for this job"
+		return jr
+	}
+
+	result, err := cr.API.CreateJob(job)
+	if err != nil {
+		jr.Err = err.Error()
+	}
+	jr.Result = result
 
 	return jr
 }

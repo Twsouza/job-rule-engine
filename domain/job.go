@@ -11,7 +11,7 @@ type JobRequest struct {
 type JobResult struct {
 	Request *JobRequest `json:"request"`
 	Result  interface{} `json:"result"`
-	Err     error       `json:"error"`
+	Err     string      `json:"error"`
 }
 
 type Job struct {

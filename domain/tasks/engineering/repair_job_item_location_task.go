@@ -42,11 +42,22 @@ func (rj RepairJobItemLocation) Execute(jobRequest domain.JobRequest) domain.Job
 		})
 	}
 
+	if len(job.Locations) == 0 {
+		return domain.JobResult{
+			Request: &jobRequest,
+			Err:     "no locations found for this job",
+		}
+	}
+
+	var errMsg string
 	result, err := rj.API.CreateJob(job)
+	if err != nil {
+		errMsg = err.Error()
+	}
 
 	return domain.JobResult{
 		Request: &jobRequest,
 		Result:  result,
-		Err:     err,
+		Err:     errMsg,
 	}
 }

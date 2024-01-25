@@ -1,7 +1,6 @@
 package housekeeping
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/Twsouza/job-rule-engine/domain"
@@ -171,7 +170,7 @@ func TestCleanBedsRoom_Execute(t *testing.T) {
 		expectedResult := domain.JobResult{
 			Request: &jobRequest,
 			Result:  "success",
-			Err:     nil,
+			Err:     "",
 		}
 
 		mockAPI := &mock.JobAPIMock{}
@@ -208,7 +207,7 @@ func TestCleanBedsRoom_Execute(t *testing.T) {
 		expectedResult := domain.JobResult{
 			Request: &jobRequest,
 			Result:  nil,
-			Err:     errors.New("no room location found"),
+			Err:     "no locations found for this job",
 		}
 
 		mockAPI := &mock.JobAPIMock{}

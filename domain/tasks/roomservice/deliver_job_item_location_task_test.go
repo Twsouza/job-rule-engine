@@ -26,6 +26,11 @@ func TestDeliverJobItemLocation_AssertRule(t *testing.T) {
 						DisplayName: "Floor",
 					},
 				},
+				{
+					LocationType: &domain.LocationType{
+						DisplayName: "Room",
+					},
+				},
 			},
 		}
 
@@ -131,7 +136,7 @@ func TestDeliverJobItemLocation_Execute(t *testing.T) {
 		expectedResult := domain.JobResult{
 			Request: &jobRequest,
 			Result:  "job result",
-			Err:     nil,
+			Err:     "",
 		}
 
 		mockAPI := &mock.JobAPIMock{}
@@ -187,6 +192,6 @@ func TestDeliverJobItemLocation_Execute(t *testing.T) {
 		dj.API = mockAPI
 
 		result := dj.Execute(jobRequest)
-		assert.Equal(t, expectedError, result.Err)
+		assert.Equal(t, expectedError.Error(), result.Err)
 	})
 }

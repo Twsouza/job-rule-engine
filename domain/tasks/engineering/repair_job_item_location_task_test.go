@@ -136,7 +136,7 @@ func TestRepairJobItemLocation_Execute(t *testing.T) {
 		expectedResult := domain.JobResult{
 			Request: &jobRequest,
 			Result:  "success",
-			Err:     nil,
+			Err:     "",
 		}
 
 		mockAPI := &mock.JobAPIMock{}
@@ -185,7 +185,7 @@ func TestRepairJobItemLocation_Execute(t *testing.T) {
 		expectedResult := domain.JobResult{
 			Request: &jobRequest,
 			Result:  "",
-			Err:     errors.New("failed to create job"),
+			Err:     "failed to create job",
 		}
 
 		mockAPI := &mock.JobAPIMock{}

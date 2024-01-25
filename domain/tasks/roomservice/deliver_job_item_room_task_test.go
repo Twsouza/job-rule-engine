@@ -164,15 +164,15 @@ func TestDeliverJobItemRoom_Execute(t *testing.T) {
 
 		expectedJobResult := domain.JobResult{
 			Request: &jobRequest,
-			Err:     errors.New("API error"),
+			Err:     "API error",
 		}
 
 		mockAPI := &mock.JobAPIMock{}
 		mockAPI.CreateJobFunc = func(job *domain.Job) (interface{}, error) {
-			return nil, errors.New("API error")
+			return nil, nil
 		}
 		mockAPI.GetFloorRoomsFunc = func(locationID int) ([]domain.Location, error) {
-			return nil, nil
+			return nil, errors.New("API error")
 		}
 
 		dj.API = mockAPI

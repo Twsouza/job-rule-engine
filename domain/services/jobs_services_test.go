@@ -2,6 +2,7 @@ package services
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 
 	"github.com/Twsouza/job-rule-engine/application/dto"
@@ -57,8 +58,8 @@ func TestCreateJob(t *testing.T) {
 		// Call the CreateJob function
 		jr := jobService.CreateJob(jobRequest)
 		assert.Len(t, jr, 2)
-		assert.Nil(t, jr[0].Err)
-		assert.Nil(t, jr[1].Err)
+		assert.Empty(t, jr[0].Err)
+		assert.Empty(t, jr[1].Err)
 	})
 
 	t.Run("should return an error when a rule fails", func(t *testing.T) {
@@ -68,7 +69,7 @@ func TestCreateJob(t *testing.T) {
 			},
 			ExecuteFunc: func(jobRequest domain.JobRequest) domain.JobResult {
 				return domain.JobResult{
-					Err: errors.New("failed to execute rule"),
+					Err: "failed to execute rule",
 				}
 			},
 		})
@@ -76,10 +77,7 @@ func TestCreateJob(t *testing.T) {
 		// Call the CreateJob function
 		jr := jobService.CreateJob(jobRequest)
 		assert.Len(t, jr, 3)
-		// assert.Nil(t, jr[0].Err)
-		// assert.Nil(t, jr[1].Err)
-		// assert.NotNil(t, jr[2].Err)
-		assert.Contains(t, jr, domain.JobResult{Err: errors.New("failed to execute rule")})
+		assert.Contains(t, jr, domain.JobResult{Err: "failed to execute rule"})
 	})
 }
 
@@ -149,7 +147,7 @@ func TestLoadJob(t *testing.T) {
 
 	t.Run("should return an error if GetDepartmentByID fails", func(t *testing.T) {
 		departmentError := errors.New("failed to get department")
-		expectedError := []error{departmentError}
+		expectedError := []error{fmt.Errorf("department %w", departmentError)}
 
 		optiiAPIMock.GetDepartmentByIDFunc = func(id int64) (*domain.Department, error) {
 			assert.Equal(t, reqDto.DepartmentID, id)
@@ -175,7 +173,7 @@ func TestLoadJob(t *testing.T) {
 
 	t.Run("should return an error if GetJobItemByID fails", func(t *testing.T) {
 		jobItemError := errors.New("failed to get job item")
-		expectedError := []error{jobItemError}
+		expectedError := []error{fmt.Errorf("jobItem %w", jobItemError)}
 
 		optiiAPIMock.GetDepartmentByIDFunc = func(id int64) (*domain.Department, error) {
 			assert.Equal(t, reqDto.DepartmentID, id)
@@ -201,7 +199,7 @@ func TestLoadJob(t *testing.T) {
 
 	t.Run("should return an error if GetLocationsByIds fails", func(t *testing.T) {
 		getLocationsError := errors.New("failed to get locations")
-		expectedError := []error{getLocationsError}
+		expectedError := []error{fmt.Errorf("location %w", getLocationsError)}
 
 		optiiAPIMock.GetDepartmentByIDFunc = func(id int64) (*domain.Department, error) {
 			assert.Equal(t, reqDto.DepartmentID, id)

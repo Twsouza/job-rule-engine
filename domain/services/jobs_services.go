@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/Twsouza/job-rule-engine/application/dto"
@@ -69,7 +70,7 @@ func (js *JobService) LoadJob(reqDto *dto.JobRequestDto) (*domain.JobRequest, []
 		defer wg.Done()
 		department, err := js.OptiiAPI.GetDepartmentByID(reqDto.DepartmentID)
 		if err != nil {
-			errChan <- err
+			errChan <- fmt.Errorf("department %w", err)
 			close(departmentChan)
 			return
 		}
@@ -80,7 +81,7 @@ func (js *JobService) LoadJob(reqDto *dto.JobRequestDto) (*domain.JobRequest, []
 		defer wg.Done()
 		jobItem, err := js.OptiiAPI.GetJobItemByID(reqDto.JobItemID)
 		if err != nil {
-			errChan <- err
+			errChan <- fmt.Errorf("jobItem %w", err)
 			close(jobItemChan)
 			return
 		}
@@ -91,7 +92,7 @@ func (js *JobService) LoadJob(reqDto *dto.JobRequestDto) (*domain.JobRequest, []
 		defer wg.Done()
 		locations, err := js.OptiiAPI.GetLocationsByIds(reqDto.LocationsID)
 		if err != nil {
-			errChan <- err
+			errChan <- fmt.Errorf("location %w", err)
 			close(locationsChan)
 			return
 		}

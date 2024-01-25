@@ -45,7 +45,7 @@ func (dj *DeliverJobItemRoomTask) Execute(jobRequest domain.JobRequest) domain.J
 
 	locations, err := dj.API.GetFloorRooms(jobRequest.Locations[0].ID)
 	if err != nil {
-		jr.Err = err
+		jr.Err = err.Error()
 		return jr
 	}
 
@@ -55,7 +55,16 @@ func (dj *DeliverJobItemRoomTask) Execute(jobRequest domain.JobRequest) domain.J
 		})
 	}
 
-	jr.Result, jr.Err = dj.API.CreateJob(job)
+	if len(job.Locations) == 0 {
+		jr.Err = "no locations found for this job"
+		return jr
+	}
+
+	result, err := dj.API.CreateJob(job)
+	if err != nil {
+		jr.Err = err.Error()
+	}
+	jr.Result = result
 
 	return jr
 }

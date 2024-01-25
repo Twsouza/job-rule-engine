@@ -43,6 +43,12 @@ If you are using VS Code, you can run the tests using the opening a terminal ins
 
 If you are using Docker Compose, you can run the tests using `docker-compose -f .devcontainer/docker-compose.yml exec engine go test ./...`.
 
+To run E2E tests, you will also have to pass the variables:
+
+```bash
+OPTII_CLIENT_ID="${OPTII_CLIENT_ID}"  OPTII_CLIENT_SECRET="${OPTII_CLIENT_SECRET}"  OPTII_AUTH_URL="https://test.optii.io/oauth/authorize"  OPTII_BASE_URL="https://test.optii.io" OPTII_API_VERSION="v1" go test -tags=e2e -timeout 30s -run ^TestMain$ github.com/Twsouza/job-rule-engine/cmd
+```
+
 ## Production
 
 To simulate the production environment, run `make run` and will spin up the container and run the application.

@@ -24,7 +24,7 @@ func TestCreateJob(t *testing.T) {
 				{
 					Request: jobRequest,
 					Result:  "success",
-					Err:     nil,
+					Err:     "",
 				},
 			}
 		}
@@ -72,10 +72,10 @@ func TestCreateJob(t *testing.T) {
 		router.ServeHTTP(res, req)
 
 		// Assert the response status code
-		assert.Equal(t, http.StatusCreated, res.Code)
+		assert.Equal(t, http.StatusOK, res.Code)
 
 		// Assert the response body
-		expectedBody := `[{"request":{"department":{"id":1,"name":"Engineering"},"jobItem":{"id":1,"displayName":"Item"},"locations":[{"id":1,"name":"Location","displayName":"Location 1"}]},"result":"success","error":null}]`
+		expectedBody := `[{"request":{"department":{"id":1,"name":"Engineering"},"jobItem":{"id":1,"displayName":"Item"},"locations":[{"id":1,"name":"Location","displayName":"Location 1"}]},"result":"success","error":""}]`
 		assert.Equal(t, expectedBody, res.Body.String())
 	})
 

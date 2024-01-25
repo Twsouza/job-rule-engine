@@ -1,7 +1,6 @@
 package housekeeping
 
 import (
-	"errors"
 	"regexp"
 
 	"github.com/Twsouza/job-rule-engine/domain"
@@ -61,15 +60,19 @@ func (cr *CleanBedsRoom) Execute(jobRequest domain.JobRequest) domain.JobResult 
 		return domain.JobResult{
 			Request: &jobRequest,
 			Result:  nil,
-			Err:     errors.New("no room location found"),
+			Err:     "no locations found for this job",
 		}
 	}
 
+	var errMsg string
 	result, err := cr.API.CreateJob(job)
+	if err != nil {
+		errMsg = err.Error()
+	}
 
 	return domain.JobResult{
 		Request: &jobRequest,
 		Result:  result,
-		Err:     err,
+		Err:     errMsg,
 	}
 }

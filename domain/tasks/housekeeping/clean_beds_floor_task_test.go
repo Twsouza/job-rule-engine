@@ -130,6 +130,7 @@ func TestCleanBedsFloor_AssertRule(t *testing.T) {
 		assert.False(t, result)
 	})
 }
+
 func TestCleanBedsFloor_Execute(t *testing.T) {
 	cr := &CleanBedsFloor{}
 
@@ -216,7 +217,7 @@ func TestCleanBedsFloor_Execute(t *testing.T) {
 		cr.API = mockAPI
 
 		result := cr.Execute(jobRequest)
-		assert.Equal(t, expectedError, result.Err)
+		assert.Equal(t, expectedError.Error(), result.Err)
 	})
 
 	t.Run("should return error if CreateJob fails", func(t *testing.T) {
@@ -267,6 +268,6 @@ func TestCleanBedsFloor_Execute(t *testing.T) {
 		cr.API = mockAPI
 
 		result := cr.Execute(jobRequest)
-		assert.Equal(t, expectedError, result.Err)
+		assert.Equal(t, expectedError.Error(), result.Err)
 	})
 }
